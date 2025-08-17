@@ -8,13 +8,22 @@ class InMemoryTaskManager {
     private final Map<Integer, Epic> epics = new HashMap<>();
     private final Map<Integer, Subtask> subtasks = new HashMap<>();
 
-    private int nextId() { return idSeq++; }
+    private int nextId() {
+        return idSeq++;
+    }
 
     // ---------- Task ----------
-    public List<Task> getAllTasks() { return new ArrayList<>(tasks.values()); }
-    public void removeAllTasks() { tasks.clear(); }
+    public List<Task> getAllTasks() {
+        return new ArrayList<>(tasks.values());
+    }
 
-    public Task getTaskById(int id) { return tasks.get(id); }
+    public void removeAllTasks() {
+        tasks.clear();
+    }
+
+    public Task getTaskById(int id) {
+        return tasks.get(id);
+    }
 
     public Task createTask(Task task) {
         int id = nextId();
@@ -30,12 +39,16 @@ class InMemoryTaskManager {
         return task;
     }
 
-    public Task deleteTaskById(int id) { return tasks.remove(id); }
+    public Task deleteTaskById(int id) {
+        return tasks.remove(id);
+    }
 
     // ---------- Epic ----------
-    public List<Epic> getAllEpics() { return new ArrayList<>(epics.values()); }
+    public List<Epic> getAllEpics() {
+        return new ArrayList<>(epics.values());
+    }
+
     public void removeAllEpics() {
-        // При удалении эпиков также удаляем их подзадачи
         for (Epic epic : epics.values()) {
             for (int subId : epic.getSubtaskIds()) {
                 subtasks.remove(subId);
@@ -44,7 +57,9 @@ class InMemoryTaskManager {
         epics.clear();
     }
 
-    public Epic getEpicById(int id) { return epics.get(id); }
+    public Epic getEpicById(int id) {
+        return epics.get(id);
+    }
 
     public Epic createEpic(Epic epic) {
         int id = nextId();
@@ -86,8 +101,12 @@ class InMemoryTaskManager {
         return res;
     }
 
+
     // ---------- Subtask ----------
-    public List<Subtask> getAllSubtasks() { return new ArrayList<>(subtasks.values()); }
+    public List<Subtask> getAllSubtasks() {
+        return new ArrayList<>(subtasks.values());
+    }
+
     public void removeAllSubtasks() {
         // Удаляем ссылки из эпиков
         for (Epic epic : epics.values()) {
@@ -96,8 +115,6 @@ class InMemoryTaskManager {
         }
         subtasks.clear();
     }
-
-    public Subtask getSubtaskById(int id) { return subtasks.get(id); }
 
     public Subtask createSubtask(Subtask subtask) {
         // Проверим, что эпик существует
@@ -133,7 +150,6 @@ class InMemoryTaskManager {
         return removed;
     }
 
-    // ---------- Пересчёт статуса эпика ----------
     private void recalcEpicStatus(int epicId) {
         Epic epic = epics.get(epicId);
         if (epic == null) return;
@@ -143,18 +159,32 @@ class InMemoryTaskManager {
             epic.status = Status.NEW;
             return;
         }
-        boolean allNew = true;
-        boolean allDone = true;
+
+        boolean hasNew = false;
+        boolean hasDone = false;
 
         for (int sid : ids) {
             Subtask s = subtasks.get(sid);
-            if (s == null) continue; // на всякий случай
-            if (s.getStatus() != Status.NEW) allNew = false;
-            if (s.getStatus() != Status.DONE) allDone = false;
+            if (s == null) continue;
+
+            Status st = s.getStatus();
+            if (st == Status.NEW) hasNew = true;
+            else if (st == Status.DONE) hasDone = true;
+            else {
+                epic.status = Status.IN_PROGRESS; // найден IN_PROGRESS
+                return;
+            }
+
+            if (hasNew && hasDone) {
+                epic.status = Status.IN_PROGRESS; // есть и NEW и DONE
+                return;
+            }
         }
 
-        if (allNew) epic.status = Status.NEW;
-        else if (allDone) epic.status = Status.DONE;
-        else epic.status = Status.IN_PROGRESS;
+        // если все NEW
+        if (hasNew && !hasDone) epic.status = Status.NEW;
+            // если все DONE
+        else if (!hasNew && hasDone) epic.status = Status.DONE;
     }
+
 }

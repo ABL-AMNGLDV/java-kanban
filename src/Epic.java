@@ -20,7 +20,9 @@ class Epic extends Task {
 
     // пакетный доступ — чтобы только менеджер мог управлять составом
     void addSubtaskId(int id) { subtaskIds.add(id); }
-    void removeSubtaskId(int id) { subtaskIds.remove((Integer) id); }
+    void removeSubtaskId(int id) {
+        subtaskIds.remove(id);
+    }
     void clearSubtasks() { subtaskIds.clear(); }
 
     // Пользователь не должен напрямую менять статус эпика
