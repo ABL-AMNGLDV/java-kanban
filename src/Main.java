@@ -1,20 +1,14 @@
-import java.util.*;
-
-// --- Демонстрация (печать только тут, пользователю методы возвращают объекты) ---
 public class Main {
     public static void main(String[] args) {
         InMemoryTaskManager manager = new InMemoryTaskManager();
 
-        // 2 обычные задачи
-        Task t1 = manager.createTask(new Task("Переезд", "Собрать коробки", Status.NEW));
-        Task t2 = manager.createTask(new Task("Купить билеты", "СПб -> МСК", Status.IN_PROGRESS));
+        Task t1 = manager.createTask(new TaskImplementation("Переезд", "Собрать коробки", Status.NEW));
+        Task t2 = manager.createTask(new TaskImplementation("Купить билеты", "СПб -> МСК", Status.IN_PROGRESS));
 
-        // Эпик с двумя подзадачами
         Epic e1 = manager.createEpic(new Epic("Сделать трекер", "Бэкенд и фронтенд"));
         Subtask s11 = manager.createSubtask(new Subtask("Скелет классов", "Task/Epic/Subtask", Status.NEW, e1.getId()));
         Subtask s12 = manager.createSubtask(new Subtask("Менеджер", "CRUD + правила", Status.NEW, e1.getId()));
 
-        // Эпик с одной подзадачей
         Epic e2 = manager.createEpic(new Epic("Переезд офиса", "Организация процесса"));
         Subtask s21 = manager.createSubtask(new Subtask("Найти грузчиков", "3 человека", Status.DONE, e2.getId()));
 

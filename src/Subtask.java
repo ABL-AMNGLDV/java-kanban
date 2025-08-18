@@ -1,5 +1,5 @@
-// --- Подзадача: принадлежит одному эпику ---
-class Subtask extends Task {
+
+class Subtask extends TaskImplementation {
     private final int epicId;
 
     public Subtask(String title, String description, Status status, int epicId) {
