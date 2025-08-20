@@ -46,6 +46,3 @@ class TaskImplementation implements Task {
                 this.getClass().getSimpleName(), id, title, status);
     }
 }
-
-
-

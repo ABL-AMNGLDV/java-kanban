@@ -1,6 +1,6 @@
 public class Main {
     public static void main(String[] args) {
-        InMemoryTaskManager manager = new InMemoryTaskManager();
+        TaskManager manager = Managers.getDefault();
 
         Task t1 = manager.createTask(new TaskImplementation("Переезд", "Собрать коробки", Status.NEW));
         Task t2 = manager.createTask(new TaskImplementation("Купить билеты", "СПб -> МСК", Status.IN_PROGRESS));

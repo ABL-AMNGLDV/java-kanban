@@ -5,5 +5,4 @@ public interface Task {
         String getDescription();
         Status getStatus();
         void setStatus(Status status);
-    }
-
+}
